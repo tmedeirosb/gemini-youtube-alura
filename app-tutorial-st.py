@@ -5,7 +5,7 @@ import re
 import json
 
 st.title("Imersão IA ALURA")
-st.subheader("Projeto criação automatizada de tutorial")
+st.subheader("Projeto localizador de respostas em vídeos do YouTube.")
 
 #recupera a ID do video do youtube
 def get_youtube_video_id(url):
@@ -68,18 +68,19 @@ if btn_set_model:
 
 #carrega o link do video do youtube
 url_youtube = st.text_input("Digite a URL do vídeo do youtube:")
+st.caption("Exemplo de URL: https://www.youtube.com/watch?v=ZBcvHmuyDKI&list=PLqyYnji54FQZOjJjTO0fzhiKdaEzVmItb&index=4&t=359s")
 btn_youtube = st.button("Recupera transcrição")
 
 if 'url_youtube' in st.session_state:
-    st.video(st.session_state.url_youtube)
+    vd_principal = st.video(st.session_state.url_youtube)
 
 if 'transcript' in st.session_state:
-    st.write(truncate_text(st.session_state.transcript, 250))
+    txt_transcricao = st.write(truncate_text(st.session_state.transcript, 250))
 
 if btn_youtube:
     if url_youtube:
         st.session_state.url_youtube = url_youtube
-        st.video(st.session_state.url_youtube)
+        vd_principal = st.video(st.session_state.url_youtube)
 
         # Replace 'your_video_id' with the actual YouTube video ID
         video_id = get_youtube_video_id(url_youtube)
@@ -89,9 +90,10 @@ if btn_youtube:
             # Armazenando a transcrição no session state
             st.session_state.transcript = get_transcript(video_id)
         
-        st.write(truncate_text(st.session_state.transcript, 250))
+        txt_transcricao = st.write(truncate_text(st.session_state.transcript, 250))
 
 prompt = st.text_input("Digite sua pergunta sobre o vídeo:")
+st.caption("Exemplo de pergunta: Quando fala sobre o princípio da coerência?")
 btn_gemini = st.button("Enviar pergunta")
 
 if btn_gemini:
@@ -124,7 +126,7 @@ if btn_gemini:
             
             video_url = create_video_url(st.session_state.video_id, start_time)
             st.markdown(video_url, unsafe_allow_html=True)                     
-            st.video(video_url, start_time=int(float(start_time))) 
+            vd_auxiliar = st.video(video_url, start_time=int(float(start_time))) 
 
             # Criando a tabela em Streamlit
             # st.write("Resposta Transcrita com Links para o Vídeo:")
