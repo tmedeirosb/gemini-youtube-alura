@@ -54,8 +54,8 @@ def create_video_url(video_id, start_time):
     return f"https://www.youtube.com/watch?v={video_id}&t={start_time_seconds}s"
 
 #set o modelo de generative AI
-GOOGLE_API_KEY = st.sidebar.text_input("Digite sua chave de API do Google:")
-btn_set_model = st.sidebar.button("Setar modelo")
+GOOGLE_API_KEY = st.sidebar.text_input("Digite sua chave do Gemini:")
+btn_set_model = st.sidebar.button("Set chave Gemini")
 
 if btn_set_model:
     genai.configure(api_key=GOOGLE_API_KEY)
@@ -63,6 +63,7 @@ if btn_set_model:
     
     #set o modelo de chat
     st.session_state.chat = model.start_chat(history=[])    
+    st.sidebar.success("Modelo configurado com sucesso.")
 
 
 #carrega o link do video do youtube
