@@ -41,12 +41,4 @@ Thiago Medeiros Barros
 
 ## Exemplo
 
-**Pergunta:** Quando o vídeo fala sobre o princípio da coerência?
-
-**Resposta:**
-```json
-{
-  "time": "468.639",
-  "texto": "O princípio da coerência é que toda informação irrelevante para o aprendizado para alcançar aquele objetivo de aprendizagem ele deve ser excluído menos é mais certo então uma música ao fundo alguma figura que não tá acrescentando para o objetivo daquela paisagem tem que ser removido"
-}
-https://www.youtube.com/watch?v=ZbcrHmyxDkI&t=468s
+[[link para vídeo executando a aplicação](https://www.youtube.com/watch?v=_vyid4fVL5w)]
