@@ -32,8 +32,8 @@ A localização de informações específicas em vídeos pode ser uma tarefa ted
 
 ## Observações
 
-1. **O sistema foi testado apenas com vídeos pequenos. Em vídeos grandes foi detectado alucionações**
-2. **O sistema recupera apenas transcrição em português**
+1. **O sistema foi testado apenas com vídeos pequenos. Em vídeos de maior duração, foram detectadas alucinações.**
+2. **O sistema é capaz de recuperar transcrições apenas em português.**
 
 ## Autor
 Thiago Medeiros Barros
