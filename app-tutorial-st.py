@@ -54,7 +54,7 @@ def create_video_url(video_id, start_time):
     return f"https://www.youtube.com/watch?v={video_id}&t={start_time_seconds}s"
 
 #set o modelo de generative AI
-GOOGLE_API_KEY = st.sidebar.text_input("Digite sua chave do Gemini:")
+GOOGLE_API_KEY = st.sidebar.text_input("Digite sua chave do Gemini:", type="password")
 btn_set_model = st.sidebar.button("Set chave Gemini")
 
 if btn_set_model:
