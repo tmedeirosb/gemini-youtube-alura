@@ -102,7 +102,7 @@ if btn_gemini:
             f'do principal texto que se baseou a resposta:' + prompt + '$$$ ' + st.session_state.transcript)
         
         response = st.session_state.chat.send_message(prompt_final)
-        #st.write(response.text)
+        st.write(response.text)
         
         # Simulando o JSON de resposta (aqui seria o verdadeiro response.text)
         #response_text = '{"time": "300", "texto": "Este é um exemplo de resposta do chat."}'
