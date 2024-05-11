@@ -102,14 +102,14 @@ if btn_gemini:
             f'em formato json: "time": "tempo de início", "texto": "resposta". '
             f'do principal texto que se baseou a resposta:' + prompt + '$$$ ' + st.session_state.transcript)
         
-        response = st.session_state.chat.send_message(prompt_final)        
+        response = st.session_state.chat.send_message(prompt_final)   
+        st.write(response.text)
         
         try:
             response_data = json.loads(response.text)
             start_time = response_data["time"]
             resposta_texto = response_data["texto"]
             
-            st.write(response.text)
             video_url = create_video_url(st.session_state.video_id, start_time)
             st.markdown(video_url, unsafe_allow_html=True)                     
             st.video(video_url, start_time=int(float(start_time))) 
