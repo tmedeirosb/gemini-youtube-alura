@@ -96,11 +96,23 @@ btn_gemini = st.button("Enviar pergunta")
 
 if btn_gemini:
     if 'transcript' in st.session_state:
-        prompt_final = ('Considere a transcrição do vídeo após a marcação $$$. '
-            'A transcrição segue o padrão: "tempo de início: texto; ". '
-            'Responde a pergunta e traga o "tempo de início" '
-            f'em formato json: "time": "tempo de início", "texto": "resposta". '
-            f'do principal texto que se baseou a resposta:' + prompt + '$$$ ' + st.session_state.transcript)
+
+        prompt_text = "responda a seguinte pergunta baseada na transcrição do vídeo."
+
+        json_instruction = ("Responda utilizando o formato JSON, onde 'time' é o tempo de início "
+                            "do trecho relevante do vídeo, e 'texto' é sua resposta. Exemplo de resposta: "
+                            '{"time": "120", "texto": "Aqui vai a resposta detalhada."}')
+
+        # Construir o prompt final incluindo a transcrição
+        prompt_final = f"{prompt_text} {prompt} Considere a transcrição do vídeo após a marcação $$$. " \
+                    f"A transcrição segue o padrão: 'tempo de início: texto; '. {json_instruction} $$$ " \
+                    f"{st.session_state.transcript}"
+
+        # prompt_final = ('Considere a transcrição do vídeo após a marcação $$$. '
+        #     'A transcrição segue o padrão: "tempo de início: texto; ". '
+        #     'Responde a pergunta e traga o "tempo de início" '
+        #     f'em formato json: "time": "tempo de início", "texto": "resposta". '
+        #     f'do principal texto que se baseou a resposta:' + prompt + '$$$ ' + st.session_state.transcript)
         
         response = st.session_state.chat.send_message(prompt_final)   
         st.write(response.text)
