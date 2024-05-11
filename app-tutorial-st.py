@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
+import json
 
 st.title("Imersão IA ALURA")
 st.subheader("Projeto criação automatizada de tutorial")
@@ -21,9 +22,15 @@ def get_transcript(video_id):
     try:
         # Fetching the transcript
         transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['pt'])
+        
         # Converting the transcript into a readable format
-        transcript_text = '\n'.join([entry['text'] for entry in transcript])
-        return transcript_text
+        #transcript_text = '\n'.join([entry['text'] for entry in transcript])
+        #return transcript_text
+
+        # Format the transcript into a readable format
+        formatted_transcript = '\n'.join([f"{x['start']}: {x['text']}; \n" for x in transcript])
+        return formatted_transcript        
+        
     except Exception as e:
         return str(e)
 
@@ -31,6 +38,20 @@ def get_transcript(video_id):
 def truncate_text(text, max_length=100):
     """ Trunca o texto para um número máximo de caracteres. """
     return text if len(text) <= max_length else text[:max_length] + '...'
+
+# def link_time_youtube(video_id, start):
+#     start_time = int(float(start))  
+#     hours, remainder = divmod(start_time, 3600)
+#     minutes, seconds = divmod(remainder, 60)
+#     time_stamp = f"{hours:02}:{minutes:02}:{seconds:02}"
+#     video_link = f"https://www.youtube.com/watch?v={video_id}&t={start_time}s"
+#     return f"<a href='{video_link}' target='_blank'>{time_stamp}</a>"
+
+def create_video_url(video_id, start_time):
+    # Conversão de start_time para int após converter para float para lidar com valores como '13.639'
+    start_time_seconds = int(float(start_time))
+    # Criação de uma URL que inclui o parâmetro de tempo
+    return f"https://www.youtube.com/watch?v={video_id}&t={start_time_seconds}s"
 
 #set o modelo de generative AI
 GOOGLE_API_KEY = st.sidebar.text_input("Digite sua chave de API do Google:")
@@ -61,6 +82,7 @@ if btn_youtube:
 
         # Replace 'your_video_id' with the actual YouTube video ID
         video_id = get_youtube_video_id(url_youtube)
+        st.session_state.video_id = video_id
         
         with st.spinner('Carregando dados...'):        
             # Armazenando a transcrição no session state
@@ -73,10 +95,35 @@ btn_gemini = st.button("Enviar pergunta")
 
 if btn_gemini:
     if 'transcript' in st.session_state:
-        prompt_final = '''Considere a transcrição do vídeo após a marcação $$$ e responde a pergunta:''' + prompt + '$$$ ' + st.session_state.transcript
+        prompt_final = ('Considere a transcrição do vídeo após a marcação $$$. '
+            'A transcrição segue o padrão: "tempo de início: texto; ". '
+            'Responde a pergunta e traga o "tempo de início" '
+            f'em formato json: "time": "tempo de início", "texto": "resposta". '
+            f'do principal texto que se baseou a resposta:' + prompt + '$$$ ' + st.session_state.transcript)
+        
         response = st.session_state.chat.send_message(prompt_final)
-        st.write(response.text)
+        #st.write(response.text)
+        
+        # Simulando o JSON de resposta (aqui seria o verdadeiro response.text)
+        #response_text = '{"time": "300", "texto": "Este é um exemplo de resposta do chat."}'
+        
+        try:
+            response_data = json.loads(response.text)
+            start_time = response_data["time"]
+            resposta_texto = response_data["texto"]
+            
+            st.write(response.text)
+            video_url = create_video_url(st.session_state.video_id, start_time)
+            st.markdown(video_url, unsafe_allow_html=True)                     
+            st.video(video_url, start_time=int(float(start_time))) 
+
+            # Criando a tabela em Streamlit
+            # st.write("Resposta Transcrita com Links para o Vídeo:")
+            # st.table({
+            #     "Link": [video_link_html],
+            #     "Texto": [resposta_texto]
+            # })
+        except json.JSONDecodeError:
+            st.error("Falha ao decodificar a resposta JSON.")
     else:
         st.error("Nenhuma transcrição disponível. Por favor, recupere a transcrição primeiro.")
-
-
